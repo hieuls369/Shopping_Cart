@@ -84,16 +84,19 @@ function setItem(product, check) {
                 [product.tag]: product
             }
         }
-        if(check){
-        cartItems[product.tag].inCart += 1;
-        }else{
+        if(!check && cartItems[product.tag].inCart != 0){
             cartItems[product.tag].inCart -= 1;
+        }else{
+            cartItems[product.tag].inCart += 1;
         }
     } else {
         product.inCart = 1;
         cartItems = {
             [product.tag]: product
         }
+    }
+    if(product.inCart == 0){
+        console.log("hihi");
     }
 
     localStorage.setItem('productsInCart', JSON.stringify(cartItems));
@@ -102,6 +105,7 @@ function setItem(product, check) {
 //load number of products in cart into the interface 
 function onLoadCartNumbers() {
     let productNumbers = localStorage.getItem('cartNumbers');
+
 
     if (productNumbers) {
         document.querySelector('.cart span').textContent = productNumbers;
@@ -121,7 +125,7 @@ function totalCost(product, check) {
         total = product.price;
     } else {
         if(check){
-        total += product.price;
+            total += product.price;
         }else{
             total -= product.price;
         }
@@ -184,9 +188,9 @@ function deleteCart() {
 
 }
 //increase or decrease the item in the cart
-function addCart(product1){
+function addCart(productLocal){
    
-    console.log(product1);
+    console.log(productLocal);
 
     let increaseCart = document.querySelectorAll('.increase');
     let decreaseCart = document.querySelectorAll('.decrease');
@@ -194,9 +198,9 @@ function addCart(product1){
         increaseCart[i].addEventListener('click', () => {
             for (let j = 0; j < product.length; j++) {
                 if(increaseCart[i].classList[1] == product[j].tag){
-                    cartNumbers(product1[product[j].tag], true);
+                    cartNumbers(productLocal[product[j].tag], true);
                     onLoadCartNumbers();
-                    totalCost(product1[product[j].tag], true);
+                    totalCost(productLocal[product[j].tag], true);
                     displayCart();
                 }
                 
