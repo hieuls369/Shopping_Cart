@@ -1,46 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/home.css">
     <title>Shop</title>
 </head>
+
 <body>
-   <div class="shop-nav">
-       <h3>Shop</h3>
-       <ul class="transition-bar">
-           <li class="home">Home</li>
-           <li class="about">About</li>
-           <li class="cart">Cart</li>
-       </ul>
-   </div>
-   <div class="shop-pro">
-       <div class="product">
-           <div class="add-cart">
-               <p>Product a</p>
-               <p>Price: 15$</p>
-               <a href="#">Add Cart</a>
-           </div>
-       </div>
-       <div class="product">
-        <div class="add-cart">
-            <p>Product a</p>
-            <p>Price: 15$</p>
+    <header>
+        <div class="overlay"></div>
+        <nav>
+            <h2>SHOP</h2>
+            <ul>
+                <li><a href="home.htm">Home</a></li>
+                <li><a href="#">About</a></li>
+                <li class="cart">
+                    <a href="cart.htm">
+                        <ion-icon name="basket"></ion-icon>Cart<span>0</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    
+    
+    <div class="container">
+        <div class="image">
+            <img src="/img/cake1.jpg" alt="">
+            <h3>Cake 1</h3>
+            <h3>$10.00</h3>
+            <a href="#" class="add-cart cart1">Add Cart</a>
+            <input type="hidden" value="10">
+        </div>
+        <div class="image">
+            <img src="/img/cake2.jpg" alt="">
+            <h3>Cake 2</h3>
+            <h3>$20.00</h3>
+            <a href="#" class="add-cart cart2">Add Cart</a>
+            <input type="hidden" value="10">
+        </div>
+        <div class="image">
+            <img src="/img/cake3.jpg" alt="">
+            <h3>Cake 3</h3>
+            <h3>$30.00</h3>
+            <a href="#" class="add-cart cart3">Add Cart</a>
+            <input type="hidden" value="10">
+        </div>
+        <div class="image">
+            <img src="/img/cake4.jpg" alt="">
+            <h3>Cake 4</h3>
+            <h3>$40.00</h3>
+            <a href="#" class="add-cart cart4">Add Cart</a>
+            <input type="hidden" value="10">
         </div>
     </div>
-    <div class="product">
-        <div class="add-cart">
-            <p>Product a</p>
-            <p>Price: 15$</p>
-        </div>
-    </div>
-    <div class="product">
-        <div class="add-cart">
-            <p>Product a</p>
-            <p>Price: 15$</p>
-        </div>
-    </div>
-   </> 
+    <script src="/js/main.js"></script>
+    <script src="https://unpkg.com/ionicons@5.0.0/dist/ionicons.js"></script>
 </body>
+
 </html>
