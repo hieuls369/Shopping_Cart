@@ -1,7 +1,7 @@
 //target all the element has the same class
 let carts = document.querySelectorAll('.add-cart');
 
-var check = true;
+var check = 0;
 console.log(carts);
 //create and store product information
 let product = [
@@ -37,9 +37,9 @@ onLoadCartNumbers();
 //add a cart event for each product
 for (let i = 0; i < carts.length; i++) {
     carts[i].addEventListener('click', () => {
-        cartNumbers(product[i], true);
+        cartNumbers(product[i], 1);
         onLoadCartNumbers();
-        totalCost(product[i], true);
+        totalCost(product[i], 1);
     });
 
 }
@@ -52,11 +52,11 @@ function cartNumbers(product, check) {
     productNumbers = parseInt(productNumbers);
     //if the first time click on cart set the productNumber to 1 else plus 1
     if (productNumbers) {
-        if(check){
-        localStorage.setItem('cartNumbers', productNumbers + 1);
-        //document.querySelectorAll('.cart span').textContent = productNumbers + 1;
-        }else{
-        localStorage.setItem('cartNumbers', productNumbers - 1);
+        if (check == 1) {
+            localStorage.setItem('cartNumbers', productNumbers + 1);
+            //document.querySelectorAll('.cart span').textContent = productNumbers + 1;
+        } else if (check == 0) {
+            localStorage.setItem('cartNumbers', productNumbers - 1);
         }
     } else {
         localStorage.setItem('cartNumbers', 1);
@@ -84,18 +84,21 @@ function setItem(product, check) {
                 [product.tag]: product
             }
         }
-        if(!check && cartItems[product.tag].inCart != 0){
+
+        if (check == 0 && cartItems[product.tag].inCart != 0) {
             cartItems[product.tag].inCart -= 1;
-        }else{
+        }
+        else if (check == 1) {
             cartItems[product.tag].inCart += 1;
         }
+
     } else {
         product.inCart = 1;
         cartItems = {
             [product.tag]: product
         }
     }
-    if(product.inCart == 0){
+    if (product.inCart == 0) {
         console.log("hihi");
     }
 
@@ -124,9 +127,9 @@ function totalCost(product, check) {
     if (total == null) {
         total = product.price;
     } else {
-        if(check){
+        if (check == 1) {
             total += product.price;
-        }else{
+        } else if (check == 0) {
             total -= product.price;
         }
     }
@@ -155,7 +158,7 @@ function displayCart() {
             //concat the information of each product to the cart.htm
             productContainer.innerHTML += `
             <div class="product">
-                <ion-icon name="close-circle"></ion-icon>
+                <ion-icon class="delete ${item.tag}" name="close-circle"></ion-icon>
                 <img src="/img/${item.tag}.jpg">
                 <span>${item.name}</span>
             </div>
@@ -180,46 +183,68 @@ function displayCart() {
             </div>
         `
         addCart(cartItems);
+        deleteCart(cartItems);
     }
 }
 displayCart();
 //delete the item in the cart
-function deleteCart() {
+function deleteCart(productLocal) {
+
+    let deleteCart = document.querySelectorAll('.delete');
+
+    for (let i = 0; i < deleteCart.length; i++) {
+        deleteCart[i].addEventListener('click', () => {
+            for (let j = 0; j < product.length; j++) {
+                if (deleteCart[i].classList[1] == product[j].tag) {
+                    console.log(productLocal);
+                    delete productLocal[product[j].tag];
+                    addCart(productLocal);
+                    displayCart();
+                }
+
+            }
+        })
+
+    }
 
 }
 //increase or decrease the item in the cart
-function addCart(productLocal){
-   
-    console.log(productLocal);
+function addCart(productLocal) {
+
+
 
     let increaseCart = document.querySelectorAll('.increase');
     let decreaseCart = document.querySelectorAll('.decrease');
+
+
     for (let i = 0; i < increaseCart.length; i++) {
         increaseCart[i].addEventListener('click', () => {
             for (let j = 0; j < product.length; j++) {
-                if(increaseCart[i].classList[1] == product[j].tag){
-                    cartNumbers(productLocal[product[j].tag], true);
+                if (increaseCart[i].classList[1] == product[j].tag) {
+                    cartNumbers(productLocal[product[j].tag], 1);
                     onLoadCartNumbers();
-                    totalCost(productLocal[product[j].tag], true);
+                    totalCost(productLocal[product[j].tag], 1);
                     displayCart();
                 }
-                
+
             }
-            
+
         });
     }
+
+
     for (let i = 0; i < decreaseCart.length; i++) {
         decreaseCart[i].addEventListener('click', () => {
             for (let j = 0; j < product.length; j++) {
-                if(increaseCart[i].classList[1] == product[j].tag){
-                    cartNumbers(product1[product[j].tag], false);
+                if (increaseCart[i].classList[1] == product[j].tag) {
+                    cartNumbers(productLocal[product[j].tag], 0);
                     onLoadCartNumbers();
-                    totalCost(product1[product[j].tag], false);
+                    totalCost(productLocal[product[j].tag], 0);
                     displayCart();
                 }
-                
+
             }
-            
+
         });
     }
 }
