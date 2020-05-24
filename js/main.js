@@ -91,6 +91,7 @@ function setItem(product, check) {
         else if (check == 1) {
             cartItems[product.tag].inCart += 1;
         }
+        
 
     } else {
         product.inCart = 1;
@@ -98,9 +99,7 @@ function setItem(product, check) {
             [product.tag]: product
         }
     }
-    if (product.inCart == 0) {
-        console.log("hihi");
-    }
+    
 
     localStorage.setItem('productsInCart', JSON.stringify(cartItems));
 }
@@ -187,18 +186,31 @@ function displayCart() {
     }
 }
 displayCart();
+//select item and delete if press the delete button or product in cart equal to 0
+function selectedDelItems(productLocal, productDel) {
+    //get all the information in the localStorage
+    var productNumber = localStorage.getItem('cartNumbers');
+    var totalCost = localStorage.getItem('totalCost');
+    var inCartDel = productLocal[productDel.tag].inCart;
+    var costCartDel = productDel.price * inCartDel;
+    //delete the item selected
+    delete productLocal[productDel.tag];
+    localStorage.setItem('productsInCart', JSON.stringify(productLocal));
+    //set the cartNumber and totalCost after selected product delete
+    localStorage.setItem('cartNumbers', productNumber - inCartDel);
+    localStorage.setItem('totalCost', totalCost - costCartDel);
+}
 //delete the item in the cart
 function deleteCart(productLocal) {
 
     let deleteCart = document.querySelectorAll('.delete');
-
+    //Add each of the delete button a new event
     for (let i = 0; i < deleteCart.length; i++) {
         deleteCart[i].addEventListener('click', () => {
             for (let j = 0; j < product.length; j++) {
                 if (deleteCart[i].classList[1] == product[j].tag) {
-                    console.log(productLocal);
-                    delete productLocal[product[j].tag];
-                    addCart(productLocal);
+                    selectedDelItems(productLocal, product[j]);
+                    onLoadCartNumbers();
                     displayCart();
                 }
 
@@ -211,12 +223,10 @@ function deleteCart(productLocal) {
 //increase or decrease the item in the cart
 function addCart(productLocal) {
 
-
-
     let increaseCart = document.querySelectorAll('.increase');
     let decreaseCart = document.querySelectorAll('.decrease');
 
-
+    //add event +1 product for each increase button
     for (let i = 0; i < increaseCart.length; i++) {
         increaseCart[i].addEventListener('click', () => {
             for (let j = 0; j < product.length; j++) {
@@ -232,7 +242,7 @@ function addCart(productLocal) {
         });
     }
 
-
+    //add event -1 product for each decrease button
     for (let i = 0; i < decreaseCart.length; i++) {
         decreaseCart[i].addEventListener('click', () => {
             for (let j = 0; j < product.length; j++) {
