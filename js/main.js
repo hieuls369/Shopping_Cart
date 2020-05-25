@@ -1,8 +1,7 @@
 //target all the element has the same class
 let carts = document.querySelectorAll('.add-cart');
-
+var flag = false;
 var check = 0;
-console.log(carts);
 //create and store product information
 let product = [
     {
@@ -34,6 +33,9 @@ let product = [
 ]
 //load products in the cart for the first time
 onLoadCartNumbers();
+//display the cart
+displayCart();
+
 //add a cart event for each product
 for (let i = 0; i < carts.length; i++) {
     carts[i].addEventListener('click', () => {
@@ -48,7 +50,6 @@ for (let i = 0; i < carts.length; i++) {
 //count number of the product has been clicked
 function cartNumbers(product, check) {
     let productNumbers = localStorage.getItem('cartNumbers');
-
     productNumbers = parseInt(productNumbers);
     //if the first time click on cart set the productNumber to 1 else plus 1
     if (productNumbers) {
@@ -62,16 +63,13 @@ function cartNumbers(product, check) {
         localStorage.setItem('cartNumbers', 1);
         //document.querySelectorAll('.cart span').textContent = 1;
     }
-
     setItem(product, check);
-
-
 }
+
 //store the product has been click to the localStorage
 function setItem(product, check) {
     //get all the product int the cart
     let cartItems = localStorage.getItem('productsInCart');
-
     cartItems = JSON.parse(cartItems);
     //if the first time purchase the product the inCart set to 1 
     //else inCart increase by 1
@@ -84,30 +82,38 @@ function setItem(product, check) {
                 [product.tag]: product
             }
         }
+        if (cartItems[product.tag].inCart != 0) {
+            if (check == 0) {
+                if (cartItems[product.tag].inCart == 1) {
+                    console.log(cartItems[product.tag].price);
+                    selectedDelItems(cartItems, product);
 
-        if (check == 0 && cartItems[product.tag].inCart != 0) {
-            cartItems[product.tag].inCart -= 1;
+                } else {
+                    cartItems[product.tag].inCart -= 1;
+                }
+            }
+            else if (check == 1) {
+                cartItems[product.tag].inCart += 1;
+            }
+        } else {
+            product.inCart = 1;
+            cartItems = {
+                ...cartItems,
+                [product.tag]: product
+            }
         }
-        else if (check == 1) {
-            cartItems[product.tag].inCart += 1;
-        }
-        
-
     } else {
         product.inCart = 1;
         cartItems = {
             [product.tag]: product
         }
     }
-    
-
     localStorage.setItem('productsInCart', JSON.stringify(cartItems));
 }
 
 //load number of products in cart into the interface 
 function onLoadCartNumbers() {
     let productNumbers = localStorage.getItem('cartNumbers');
-
 
     if (productNumbers) {
         document.querySelector('.cart span').textContent = productNumbers;
@@ -132,7 +138,6 @@ function totalCost(product, check) {
             total -= product.price;
         }
     }
-
     localStorage.setItem('totalCost', total);
 }
 
@@ -185,7 +190,10 @@ function displayCart() {
         deleteCart(cartItems);
     }
 }
-displayCart();
+
+
+
+
 //select item and delete if press the delete button or product in cart equal to 0
 function selectedDelItems(productLocal, productDel) {
     //get all the information in the localStorage
@@ -193,12 +201,17 @@ function selectedDelItems(productLocal, productDel) {
     var totalCost = localStorage.getItem('totalCost');
     var inCartDel = productLocal[productDel.tag].inCart;
     var costCartDel = productDel.price * inCartDel;
+    // console.log(productLocal);
+    // console.log(productDel);
     //delete the item selected
     delete productLocal[productDel.tag];
     localStorage.setItem('productsInCart', JSON.stringify(productLocal));
-    //set the cartNumber and totalCost after selected product delete
-    localStorage.setItem('cartNumbers', productNumber - inCartDel);
-    localStorage.setItem('totalCost', totalCost - costCartDel);
+    //set the cartNumber and totalCost after selected product delete if user click on the delete button
+    if (flag) {
+        localStorage.setItem('cartNumbers', productNumber - inCartDel);
+        localStorage.setItem('totalCost', totalCost - costCartDel);
+        flag = false;
+    }
 }
 //delete the item in the cart
 function deleteCart(productLocal) {
@@ -209,11 +222,11 @@ function deleteCart(productLocal) {
         deleteCart[i].addEventListener('click', () => {
             for (let j = 0; j < product.length; j++) {
                 if (deleteCart[i].classList[1] == product[j].tag) {
+                    flag = true;
                     selectedDelItems(productLocal, product[j]);
                     onLoadCartNumbers();
-                    displayCart();
+                    displayCart();   
                 }
-
             }
         })
 
@@ -236,9 +249,7 @@ function addCart(productLocal) {
                     totalCost(productLocal[product[j].tag], 1);
                     displayCart();
                 }
-
             }
-
         });
     }
 
@@ -252,9 +263,7 @@ function addCart(productLocal) {
                     totalCost(productLocal[product[j].tag], 0);
                     displayCart();
                 }
-
             }
-
         });
     }
 }
